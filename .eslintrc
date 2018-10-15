@@ -5,7 +5,7 @@
     "react",
     "flowtype",
     "jsx-a11y",
-    "import"
+    "import",
   ],
   "rules": {
     "react/jsx-filename-extension": [
