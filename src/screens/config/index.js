@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import { View, Text } from 'react-native'
 import {
   Button,
+  Card,
   FormLabel,
   FormInput,
   FormValidationMessage,
@@ -105,10 +106,10 @@ class Config extends PureComponent {
           loading={fetching}
           onPress={this.saveUserData}
         />
-
-        <Text>Your current credentials:</Text>
-        <Text>username: {savedUsername}</Text>
-        <Text>nick: {savedNick}</Text>
+        <Card title="Your current credentials:">
+          <Text>username: {savedUsername}</Text>
+          <Text>nick: {savedNick}</Text>
+        </Card>
       </View>
     )
   }
