@@ -57,6 +57,4 @@ class AppProvider extends Component {
   }
 }
 
-export default () => (
-  <AppNavigator />
-)
+export default () => <AppNavigator />

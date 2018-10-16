@@ -1,13 +1,18 @@
 import React, { PureComponent } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import {
   Button,
   FormLabel,
   FormInput,
   FormValidationMessage,
 } from 'react-native-elements'
+import { _storeData, _retrieveData } from '../../utils/async-storage'
 
 const GENERIC_FIELD_ERROR_MSG = 'Please fill all parameters'
+const GENERIC_ASYNC_ERROR_MSG =
+  'Error while saving parameters. Please try again'
+export const USERNAME_STORAGE_KEY = 'username'
+export const NICK_STORAGE_KEY = 'nick'
 
 class Config extends PureComponent {
   static navigationOptions = {
@@ -19,17 +24,48 @@ class Config extends PureComponent {
     this.state = {
       username: '',
       nick: '',
-      error: false,
+      error: '',
       fetching: false,
+      savedUsername: '',
+      savedNick: '',
     }
   }
 
-  saveUserData = () => {
+  async componentDidMount() {
+    const savedUsername = await _retrieveData(USERNAME_STORAGE_KEY)
+    const savedNick = await _retrieveData(NICK_STORAGE_KEY)
+
+    if (savedUsername && savedNick) {
+      this.setState({
+        savedUsername,
+        savedNick,
+        username: savedUsername,
+        nick: savedNick,
+      })
+    }
+  }
+
+  saveUserData = async () => {
     const { username, nick } = this.state
 
+    this.setState({ fetching: true })
+
     if (!username || !nick) {
-      this.setState({ error: true })
+      this.setState({ error: GENERIC_FIELD_ERROR_MSG })
+      return
     }
+
+    try {
+      await _storeData(USERNAME_STORAGE_KEY, username)
+      await _storeData(NICK_STORAGE_KEY, nick)
+      this.setState({
+        savedUsername: username,
+        savedNick: nick,
+      })
+    } catch (error) {
+      this.setState({ error: GENERIC_ASYNC_ERROR_MSG })
+    }
+    this.setState({ fetching: false })
   }
 
   userNameInputHandler = value => {
@@ -41,21 +77,24 @@ class Config extends PureComponent {
   }
 
   render() {
-    const { error } = this.state
+    const {
+      error,
+      fetching,
+      username,
+      nick,
+      savedNick,
+      savedUsername,
+    } = this.state
 
     return (
       <View>
         <FormLabel>Username:</FormLabel>
-        <FormInput onChangeText={this.userNameInputHandler} />
+        <FormInput onChangeText={this.userNameInputHandler} value={username} />
 
         <FormLabel>Nick:</FormLabel>
-        <FormInput onChangeText={this.nickInputHandler} />
+        <FormInput onChangeText={this.nickInputHandler} value={nick} />
 
-        {error && (
-          <FormValidationMessage>
-            {GENERIC_FIELD_ERROR_MSG}
-          </FormValidationMessage>
-        )}
+        <FormValidationMessage>{error}</FormValidationMessage>
 
         <Button
           large
@@ -63,8 +102,13 @@ class Config extends PureComponent {
           backgroundColor="#4286f4"
           icon={{ name: 'cached' }}
           title="Save user data"
+          loading={fetching}
           onPress={this.saveUserData}
         />
+
+        <Text>Your current credentials:</Text>
+        <Text>username: {savedUsername}</Text>
+        <Text>nick: {savedNick}</Text>
       </View>
     )
   }
