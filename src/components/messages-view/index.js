@@ -1,13 +1,23 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, FlatList } from 'react-native'
+import MessageElementComponent from '../message'
 
 const styles = StyleSheet.create({
-  messagesContainer: {},
+  container: {},
 })
 
-const MessageViewComponent = () => (
-  <View styles={styles.messagesContainer}>
-    <Text>Fake message 1</Text>
+const MessageViewComponent = ({ loading, messages }) => (
+  <View style={styles.container}>
+    {loading ? (
+      <Text>Loading</Text>
+    ) : (
+      <FlatList
+        data={messages}
+        renderItem={({ item }) => (
+          <MessageElementComponent key={item.id} {...item} />
+        )}
+      />
+    )}
   </View>
 )
 

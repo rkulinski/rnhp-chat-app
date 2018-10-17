@@ -4,10 +4,10 @@
  * @flow
  */
 import React, { PureComponent } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, KeyboardAvoidingView} from 'react-native'
 import { MessageInputComponent, MessagesViewComponet } from '../../components'
 import { _retrieveData } from '../../utils/async-storage'
-import { createMessage } from '../../utils/api'
+import { createMessage, getMessages } from '../../utils/api'
 import { USERNAME_STORAGE_KEY, NICK_STORAGE_KEY } from '../config'
 
 const INFO_ABOUT_CREDENTIALS = 'Please provide credentials in Config tab'
@@ -28,11 +28,12 @@ class ChatScreen extends PureComponent {
       error: '',
       fetching: false,
       photo: null,
+      messages: [],
     }
   }
 
   async componentDidMount() {
-    this.onInit()
+    this.fetchMessages()
     listener = this.props.navigation.addListener('didFocus', () =>
       this.onTabEnter()
     )
@@ -43,11 +44,19 @@ class ChatScreen extends PureComponent {
   }
 
   onTabEnter = () => {
-    this.onInit()
+    this.fetchMessages()
   }
 
-  onInit = async () => {
+  fetchMessages = async () => {
+    this.setState({ fetching: true })
+
     await this.getUserData()
+    const messages = await getMessages()
+
+    this.setState({
+      messages: messages.data,
+      fetching: false,
+    })
   }
 
   sendMessage = async text => {
@@ -55,6 +64,7 @@ class ChatScreen extends PureComponent {
 
     try {
       await createMessage(text, username, photo)
+      await this.fetchMessages()
     } catch (err) {
       console.log(err)
     }
@@ -80,16 +90,21 @@ class ChatScreen extends PureComponent {
   }
 
   render() {
+    const { messages, error, fetching } = this.state
+
     return (
       <View style={styles.chatContainer}>
-        <MessagesViewComponet />
-        <Text>{this.state.error}</Text>
-        <View style={styles.messageInputWrapper}>
+        <View style={styles.messagesContainer}>
+          <MessagesViewComponet messages={messages} loading={fetching} />
+        </View>
+
+        <KeyboardAvoidingView style={styles.messageInputWrapper}>
+          <Text style={styles.errorMessage}>{error}</Text>
           <MessageInputComponent
             sendMessage={this.sendMessage}
             attachPhoto={this.attachPhoto}
           />
-        </View>
+        </KeyboardAvoidingView>
       </View>
     )
   }
