@@ -11,6 +11,7 @@ import { createMessage } from '../../utils/api'
 import { USERNAME_STORAGE_KEY, NICK_STORAGE_KEY } from '../config'
 
 const INFO_ABOUT_CREDENTIALS = 'Please provide credentials in Config tab'
+let listener: any
 
 import styles from './styles'
 
@@ -26,19 +27,41 @@ class ChatScreen extends PureComponent {
       nick: '',
       error: '',
       fetching: false,
+      photo: null,
     }
   }
 
   async componentDidMount() {
+    this.onInit()
+    listener = this.props.navigation.addListener('didFocus', () =>
+      this.onTabEnter()
+    )
+  }
+
+  componentWillUnmount() {
+    listener.remove()
+  }
+
+  onTabEnter = () => {
+    this.onInit()
+  }
+
+  onInit = async () => {
     await this.getUserData()
   }
 
-  sendMessage = async (text) => {
+  sendMessage = async text => {
+    const { username, photo } = this.state
+
     try {
-      await createMessage(text, this.state.username, null)
-    } catch(err) {
+      await createMessage(text, username, photo)
+    } catch (err) {
       console.log(err)
     }
+  }
+
+  attachPhoto = photo => {
+    this.setState({ photo })
   }
 
   getUserData = async () => {
@@ -51,6 +74,7 @@ class ChatScreen extends PureComponent {
       this.setState({
         username,
         nick,
+        error: '',
       })
     }
   }
@@ -63,6 +87,7 @@ class ChatScreen extends PureComponent {
         <View style={styles.messageInputWrapper}>
           <MessageInputComponent
             sendMessage={this.sendMessage}
+            attachPhoto={this.attachPhoto}
           />
         </View>
       </View>

@@ -5224,6 +5224,10 @@ react-native-elements@^0.19.1:
     opencollective "^1.0.3"
     prop-types "^15.5.8"
 
+react-native-image-picker@^0.27.1:
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-0.27.1.tgz#32877c667e8c2713466fe178a6c7dd648e6cb5d3"
+
 react-native-safe-area-view@0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.11.0.tgz#4f3dda43c2bace37965e7c6aef5fc83d4f19d174"

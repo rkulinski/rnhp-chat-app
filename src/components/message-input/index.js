@@ -4,7 +4,14 @@
  * @flow
  */
 import React, { PureComponent } from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native'
+import ImagePicker from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 const styles = StyleSheet.create({
@@ -21,6 +28,10 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
   },
+  photo: {
+    width: 50,
+    height: 50,
+  },
 })
 
 type Props = {
@@ -32,12 +43,21 @@ type State = {
   message: string,
 }
 
-class MessageInputComponent extends PureComponent<Props,State> {
+const imagePickerOptions = {
+  title: 'Select photo',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+}
+
+class MessageInputComponent extends PureComponent<Props, State> {
   constructor(props) {
     super(props)
 
     this.state = {
       message: '',
+      photoSource: null,
     }
   }
 
@@ -46,21 +66,36 @@ class MessageInputComponent extends PureComponent<Props,State> {
   }
 
   attachPhoto = () => {
+    ImagePicker.showImagePicker(imagePickerOptions, response => {
+      if (response.didCancel) {
+      } else if (response.error) {
+        alert('ImagePicker Error: ', response.error)
+      } else {
+        const source = { uri: 'data:image/jpeg;base64,' + response.data }
 
+        this.props.attachPhoto(response.data)
+        this.setState({ photoSource: source })
+      }
+    })
   }
 
   render() {
+    const { message, photoSource } = this.state
     return (
       <View style={styles.messageInputWrapper}>
         <TextInput
           style={styles.messageInput}
           multiline={true}
           onChangeText={message => this.setState({ message })}
-          value={this.state.message}
+          value={message}
         />
         <View style={styles.buttonsGroup}>
           <TouchableOpacity onPress={this.attachPhoto}>
-            <Icon name="ios-camera" size={50} />
+            {photoSource ? (
+              <Image source={photoSource} style={styles.photo} />
+            ) : (
+              <Icon name="ios-camera" size={50} />
+            )}
           </TouchableOpacity>
           <TouchableOpacity onPress={this.sendMessage}>
             <Icon name="ios-arrow-round-forward" size={50} />
