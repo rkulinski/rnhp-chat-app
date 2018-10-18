@@ -44,7 +44,8 @@ class ChatScreen extends PureComponent<Props, State> {
       photo: '',
       messages: [],
     }
-    this.messageInputRef = React.createRef();
+    this.messageInputRef = React.createRef()
+    this.messagesListComponentRef = React.createRef()
   }
 
   async componentDidMount() {
@@ -68,10 +69,10 @@ class ChatScreen extends PureComponent<Props, State> {
     await this.getUserData()
     const newMessages = await getMessages()
 
-    this.setState(prevState => ({
-      messages: [...prevState.messages, ...newMessages.data],
+    this.setState(() => ({
+      messages: newMessages.data,
       fetching: false,
-    }))
+    }),this.scrollListToBottom)
   }
 
   sendMessage = async (text: string) => {
@@ -89,11 +90,16 @@ class ChatScreen extends PureComponent<Props, State> {
   clearMessageInput = () => {
     this.messageInputRef.current.clearFields()
     Keyboard.dismiss()
-    this.setState({photo: ''})
+    this.setState({ photo: '' })
   }
 
   attachPhoto = (photo: string) => {
     this.setState({ photo })
+    this.scrollListToBottom()
+  }
+
+  scrollListToBottom = () => {
+    this.messagesListComponentRef.current.scrollListToBottom()
   }
 
   getUserData = async () => {
@@ -117,7 +123,11 @@ class ChatScreen extends PureComponent<Props, State> {
     return (
       <View style={styles.chatContainer}>
         <View style={styles.messagesContainer}>
-          <MessagesViewComponent messages={messages} loading={fetching} />
+          <MessagesViewComponent
+            ref={this.messagesListComponentRef}
+            messages={messages}
+            loading={fetching}
+          />
         </View>
 
         <KeyboardAvoidingView

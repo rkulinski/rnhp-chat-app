@@ -3,8 +3,8 @@
  * @format
  * @flow
  */
-import React from 'react'
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import React, { PureComponent } from 'react'
+import { View, StyleSheet, FlatList } from 'react-native'
 import MessageElementComponent from '../message'
 
 const styles = StyleSheet.create({
@@ -12,27 +12,36 @@ const styles = StyleSheet.create({
 })
 
 type Props = {
-  loading: boolean,
   messages: string[],
 }
 
+const keyExtractor = item => `${item.id}`
 
-const keyExtractor = item => item.id;
+class MessageViewComponent extends PureComponent<Props> {
+  constructor(props: Props) {
+    super(props)
 
-const MessageViewComponent = ({ loading, messages }: Props) => (
-  <View style={styles.container}>
-    {loading ? (
-      <Text>Loading</Text>
-    ) : (
-      <FlatList
-        data={messages}
-        renderItem={({ item }) => (
-          <MessageElementComponent {...item} />
-        )}
-        keyExtractor={keyExtractor}
-      />
-    )}
-  </View>
-)
+    this.messageListRef = React.createRef()
+  }
+
+  scrollListToBottom = () => {
+    this.messageListRef.current.scrollToEnd()
+  }
+
+  render() {
+    const { messages } = this.props
+
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={messages}
+          renderItem={({ item }) => <MessageElementComponent {...item} />}
+          keyExtractor={keyExtractor}
+          ref={this.messageListRef}
+        />
+      </View>
+    )
+  }
+}
 
 export default MessageViewComponent

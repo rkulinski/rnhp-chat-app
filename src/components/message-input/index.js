@@ -80,7 +80,11 @@ class MessageInputComponent extends PureComponent<Props, State> {
     const { attachPhoto } = this.props
 
     ImagePicker.showImagePicker(imagePickerOptions, response => {
-      if (response.error) {
+      if (response.didCancel) {
+        this.setState({photoSource: null})
+        attachPhoto('')
+      }
+      else if (response.error) {
         alert(`ImagePicker Error: ${response.error}`)
       } else {
         const source = { uri: `data:image/jpeg;base64,${response.data}` }
