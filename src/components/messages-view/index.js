@@ -16,6 +16,9 @@ type Props = {
   messages: string[],
 }
 
+
+const keyExtractor = item => item.id;
+
 const MessageViewComponent = ({ loading, messages }: Props) => (
   <View style={styles.container}>
     {loading ? (
@@ -24,8 +27,9 @@ const MessageViewComponent = ({ loading, messages }: Props) => (
       <FlatList
         data={messages}
         renderItem={({ item }) => (
-          <MessageElementComponent key={item.id} {...item} />
+          <MessageElementComponent {...item} />
         )}
+        keyExtractor={keyExtractor}
       />
     )}
   </View>

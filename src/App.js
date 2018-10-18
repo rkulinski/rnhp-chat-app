@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import ChatScreen from './screens/chat'
 import ConfigScreen from './screens/config'
 
-
 const AppNavigator = createBottomTabNavigator(
   {
     Chat: ChatScreen,

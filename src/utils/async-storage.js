@@ -28,5 +28,5 @@ export async function retrieveData(key: string): Promise<string> {
     alert(STORAGE_READ_ERROR)
   }
 
-  return value;
+  return value
 }

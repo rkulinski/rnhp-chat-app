@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   messageInput: {
+    padding: 10,
     borderWidth: 1,
     flexGrow: 1,
     borderRadius: 10,
     marginRight: 10,
-    maxHeight: 150,
   },
   textInput: {
     flex: 1,
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
 })
 
 type Props = {
-  attachPhoto: (any) => {},
-  sendMessage: (any) => {},
+  attachPhoto: any => {},
+  sendMessage: any => {},
 }
 
 type State = {
@@ -88,6 +88,13 @@ class MessageInputComponent extends PureComponent<Props, State> {
         attachPhoto(response.data)
         this.setState({ photoSource: source })
       }
+    })
+  }
+
+  clearFields = () => {
+    this.setState({
+      message: '',
+      photoSource: '',
     })
   }
 

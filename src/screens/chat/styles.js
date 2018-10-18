@@ -11,9 +11,6 @@ export default StyleSheet.create({
     color: 'red',
   },
   messagesContainer: {
-    flex: 3,
-  },
-  messageInputWrapper: {
     flex: 1,
   },
 })

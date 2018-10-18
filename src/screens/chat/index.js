@@ -4,7 +4,7 @@
  * @flow
  */
 import React, { PureComponent } from 'react'
-import { View, Text, KeyboardAvoidingView } from 'react-native'
+import { View, Text, Keyboard, KeyboardAvoidingView } from 'react-native'
 import { MessageInputComponent, MessagesViewComponent } from '../../components'
 import { retrieveData } from '../../utils/async-storage'
 import { createMessage, getMessages } from '../../utils/api'
@@ -35,6 +35,7 @@ class ChatScreen extends PureComponent<Props, State> {
 
   constructor(props: Props) {
     super(props)
+
     this.state = {
       username: '',
       nick: '',
@@ -43,6 +44,7 @@ class ChatScreen extends PureComponent<Props, State> {
       photo: '',
       messages: [],
     }
+    this.messageInputRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -64,12 +66,12 @@ class ChatScreen extends PureComponent<Props, State> {
     this.setState({ fetching: true })
 
     await this.getUserData()
-    const messages = await getMessages()
+    const newMessages = await getMessages()
 
-    this.setState({
-      messages: messages.data,
+    this.setState(prevState => ({
+      messages: [...prevState.messages, ...newMessages.data],
       fetching: false,
-    })
+    }))
   }
 
   sendMessage = async (text: string) => {
@@ -77,10 +79,17 @@ class ChatScreen extends PureComponent<Props, State> {
 
     try {
       await createMessage(text, username, photo)
+      this.clearMessageInput()
       await this.fetchMessages()
     } catch (err) {
       console.log(err)
     }
+  }
+
+  clearMessageInput = () => {
+    this.messageInputRef.current.clearFields()
+    Keyboard.dismiss()
+    this.setState({photo: ''})
   }
 
   attachPhoto = (photo: string) => {
@@ -111,9 +120,14 @@ class ChatScreen extends PureComponent<Props, State> {
           <MessagesViewComponent messages={messages} loading={fetching} />
         </View>
 
-        <KeyboardAvoidingView style={styles.messageInputWrapper}>
+        <KeyboardAvoidingView
+          style={styles.messageInputWrapper}
+          behavior="padding"
+          enabled
+        >
           <Text style={styles.errorMessage}>{error}</Text>
           <MessageInputComponent
+            ref={this.messageInputRef}
             sendMessage={this.sendMessage}
             attachPhoto={this.attachPhoto}
           />

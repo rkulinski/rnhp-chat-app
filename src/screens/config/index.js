@@ -4,7 +4,7 @@
  * @flow
  */
 import React, { PureComponent } from 'react'
-import { View, Text } from 'react-native'
+import { Keyboard, View, Text } from 'react-native'
 import {
   Button,
   Card,
@@ -64,6 +64,8 @@ class Config extends PureComponent<Props, State> {
   }
 
   saveUserData = async () => {
+    Keyboard.dismiss()
+
     const { username, nick } = this.state
 
     this.setState({ fetching: true })
@@ -105,7 +107,7 @@ class Config extends PureComponent<Props, State> {
     } = this.state
 
     return (
-      <View>
+      <View style={{ paddingTop: 20 }}>
         <FormLabel>Username:</FormLabel>
         <FormInput onChangeText={this.userNameInputHandler} value={username} />
 
