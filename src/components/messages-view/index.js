@@ -1,3 +1,8 @@
+/**
+ *
+ * @format
+ * @flow
+ */
 import React from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import MessageElementComponent from '../message'
@@ -6,7 +11,12 @@ const styles = StyleSheet.create({
   container: {},
 })
 
-const MessageViewComponent = ({ loading, messages }) => (
+type Props = {
+  loading: boolean,
+  messages: string[],
+}
+
+const MessageViewComponent = ({ loading, messages }: Props) => (
   <View style={styles.container}>
     {loading ? (
       <Text>Loading</Text>

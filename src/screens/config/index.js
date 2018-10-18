@@ -1,3 +1,8 @@
+/**
+ *
+ * @format
+ * @flow
+ */
 import React, { PureComponent } from 'react'
 import { View, Text } from 'react-native'
 import {
@@ -7,7 +12,7 @@ import {
   FormInput,
   FormValidationMessage,
 } from 'react-native-elements'
-import { _storeData, _retrieveData } from '../../utils/async-storage'
+import { storeData, retrieveData } from '../../utils/async-storage'
 
 const GENERIC_FIELD_ERROR_MSG = 'Please fill all parameters'
 const GENERIC_ASYNC_ERROR_MSG =
@@ -15,11 +20,23 @@ const GENERIC_ASYNC_ERROR_MSG =
 export const USERNAME_STORAGE_KEY = 'username'
 export const NICK_STORAGE_KEY = 'nick'
 
-class Config extends PureComponent {
+type Props = {}
+
+type State = {
+  username: string,
+  nick: string,
+  error: string,
+  fetching: boolean,
+  savedUsername: string,
+  savedNick: string,
+}
+
+class Config extends PureComponent<Props, State> {
   static navigationOptions = {
     title: 'Configuration',
   }
-  constructor(props) {
+
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -33,8 +50,8 @@ class Config extends PureComponent {
   }
 
   async componentDidMount() {
-    const savedUsername = await _retrieveData(USERNAME_STORAGE_KEY)
-    const savedNick = await _retrieveData(NICK_STORAGE_KEY)
+    const savedUsername = await retrieveData(USERNAME_STORAGE_KEY)
+    const savedNick = await retrieveData(NICK_STORAGE_KEY)
 
     if (savedUsername && savedNick) {
       this.setState({
@@ -57,8 +74,8 @@ class Config extends PureComponent {
     }
 
     try {
-      await _storeData(USERNAME_STORAGE_KEY, username)
-      await _storeData(NICK_STORAGE_KEY, nick)
+      await storeData(USERNAME_STORAGE_KEY, username)
+      await storeData(NICK_STORAGE_KEY, nick)
       this.setState({
         savedUsername: username,
         savedNick: nick,
@@ -69,12 +86,12 @@ class Config extends PureComponent {
     this.setState({ fetching: false })
   }
 
-  userNameInputHandler = value => {
-    this.setState({ username: value, error: false })
+  userNameInputHandler = (value: string) => {
+    this.setState({ username: value, error: '' })
   }
 
-  nickInputHandler = value => {
-    this.setState({ nick: value, error: false })
+  nickInputHandler = (value: string) => {
+    this.setState({ nick: value, error: '' })
   }
 
   render() {

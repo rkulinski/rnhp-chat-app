@@ -43,12 +43,13 @@ const styles = StyleSheet.create({
 })
 
 type Props = {
-  attachPhoto: () => {},
-  sendMessage: () => {},
+  attachPhoto: (any) => {},
+  sendMessage: (any) => {},
 }
 
 type State = {
   message: string,
+  photoSource: any,
 }
 
 const imagePickerOptions = {
@@ -60,7 +61,7 @@ const imagePickerOptions = {
 }
 
 class MessageInputComponent extends PureComponent<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -70,18 +71,21 @@ class MessageInputComponent extends PureComponent<Props, State> {
   }
 
   sendMessage = () => {
-    this.props.sendMessage(this.state.message)
+    const { message } = this.state
+    const { sendMessage } = this.props
+    sendMessage(message)
   }
 
   attachPhoto = () => {
-    ImagePicker.showImagePicker(imagePickerOptions, response => {
-      if (response.didCancel) {
-      } else if (response.error) {
-        alert('ImagePicker Error: ', response.error)
-      } else {
-        const source = { uri: 'data:image/jpeg;base64,' + response.data }
+    const { attachPhoto } = this.props
 
-        this.props.attachPhoto(response.data)
+    ImagePicker.showImagePicker(imagePickerOptions, response => {
+      if (response.error) {
+        alert(`ImagePicker Error: ${response.error}`)
+      } else {
+        const source = { uri: `data:image/jpeg;base64,${response.data}` }
+
+        attachPhoto(response.data)
         this.setState({ photoSource: source })
       }
     })
@@ -92,12 +96,12 @@ class MessageInputComponent extends PureComponent<Props, State> {
     return (
       <View style={styles.messageInputWrapper}>
         <View style={styles.messageInput}>
-        <TextInput
-          multiline={true}
-          style={styles.textInput}
-          onChangeText={message => this.setState({ message })}
-          value={message}
-        />
+          <TextInput
+            multiline
+            style={styles.textInput}
+            onChangeText={msg => this.setState({ message: msg })}
+            value={message}
+          />
         </View>
         <View style={styles.buttonsGroup}>
           <TouchableOpacity onPress={this.attachPhoto}>

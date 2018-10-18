@@ -1,13 +1,9 @@
-/**
- *
- * @format
- * @flow
- */
-import React, { Component } from 'react'
+import React from 'react'
 import { createBottomTabNavigator } from 'react-navigation'
 import Icon from 'react-native-vector-icons/Ionicons'
 import ChatScreen from './screens/chat'
 import ConfigScreen from './screens/config'
+
 
 const AppNavigator = createBottomTabNavigator(
   {
@@ -37,24 +33,5 @@ const AppNavigator = createBottomTabNavigator(
     },
   }
 )
-
-const AppContext = React.createContext()
-
-class AppProvider extends Component {
-  appState = {
-    username: '',
-    nick: '',
-    updateUsername: input => {
-      this.setState({ username: input })
-    },
-    updateNick: input => {
-      this.setState({ nick: input })
-    },
-  }
-
-  render() {
-    return <AppContext.Provider value={this.appState} />
-  }
-}
 
 export default () => <AppNavigator />

@@ -4,30 +4,43 @@
  * @flow
  */
 import React, { PureComponent } from 'react'
-import { View, Text, KeyboardAvoidingView} from 'react-native'
-import { MessageInputComponent, MessagesViewComponet } from '../../components'
-import { _retrieveData } from '../../utils/async-storage'
+import { View, Text, KeyboardAvoidingView } from 'react-native'
+import { MessageInputComponent, MessagesViewComponent } from '../../components'
+import { retrieveData } from '../../utils/async-storage'
 import { createMessage, getMessages } from '../../utils/api'
 import { USERNAME_STORAGE_KEY, NICK_STORAGE_KEY } from '../config'
+
+import styles from './styles'
 
 const INFO_ABOUT_CREDENTIALS = 'Please provide credentials in Config tab'
 let listener: any
 
-import styles from './styles'
+type Props = {
+  navigation: any,
+}
 
-class ChatScreen extends PureComponent {
+type State = {
+  username: string,
+  nick: string,
+  error: string,
+  fetching: boolean,
+  photo: string,
+  messages: any[],
+}
+
+class ChatScreen extends PureComponent<Props, State> {
   static navigationOptions = {
     title: 'Chat',
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       username: '',
       nick: '',
       error: '',
       fetching: false,
-      photo: null,
+      photo: '',
       messages: [],
     }
   }
@@ -59,7 +72,7 @@ class ChatScreen extends PureComponent {
     })
   }
 
-  sendMessage = async text => {
+  sendMessage = async (text: string) => {
     const { username, photo } = this.state
 
     try {
@@ -70,13 +83,13 @@ class ChatScreen extends PureComponent {
     }
   }
 
-  attachPhoto = photo => {
+  attachPhoto = (photo: string) => {
     this.setState({ photo })
   }
 
   getUserData = async () => {
-    const username = await _retrieveData(USERNAME_STORAGE_KEY)
-    const nick = await _retrieveData(NICK_STORAGE_KEY)
+    const username = await retrieveData(USERNAME_STORAGE_KEY)
+    const nick = await retrieveData(NICK_STORAGE_KEY)
 
     if (!username) {
       this.setState({ error: INFO_ABOUT_CREDENTIALS })
@@ -95,7 +108,7 @@ class ChatScreen extends PureComponent {
     return (
       <View style={styles.chatContainer}>
         <View style={styles.messagesContainer}>
-          <MessagesViewComponet messages={messages} loading={fetching} />
+          <MessagesViewComponent messages={messages} loading={fetching} />
         </View>
 
         <KeyboardAvoidingView style={styles.messageInputWrapper}>

@@ -11,21 +11,22 @@ const STORAGE_READ_ERROR: string =
   'Error occurred while reading data from async storage'
 const ASYNC_STORAGE_PREFIX: string = '@RNHP_'
 
-export async function _storeData(key: string, value: string): Promise<any> {
+export async function storeData(key: string, value: string): Promise<any> {
   try {
     return await AsyncStorage.setItem(`${ASYNC_STORAGE_PREFIX}${key}`, value)
   } catch (error) {
     alert(STORAGE_SAVE_ERROR)
+    return null
   }
 }
 
-export async function _retrieveData(key: string): string {
+export async function retrieveData(key: string): Promise<string> {
+  let value: string = ''
   try {
-    const value = await AsyncStorage.getItem(`${ASYNC_STORAGE_PREFIX}${key}`)
-    if (value !== null) {
-      return value
-    }
+    value = await AsyncStorage.getItem(`${ASYNC_STORAGE_PREFIX}${key}`)
   } catch (error) {
     alert(STORAGE_READ_ERROR)
   }
+
+  return value;
 }

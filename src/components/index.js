@@ -1,4 +1,4 @@
 import MessageInputComponent from './message-input'
-import MessagesViewComponet from './messages-view'
+import MessagesViewComponent from './messages-view'
 
-export { MessageInputComponent, MessagesViewComponet }
+export { MessageInputComponent, MessagesViewComponent }

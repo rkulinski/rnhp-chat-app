@@ -1,3 +1,8 @@
+/**
+ *
+ * @format
+ * @flow
+ */
 import React from 'react'
 import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -23,16 +28,24 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     paddingRight: 10,
-  }
+  },
 })
+
+type Props = {
+  id: string,
+  image: string,
+  content: string,
+  author: string,
+  likes_count: number,
+}
 
 const MessageElementComponent = ({
   id,
   image,
   content,
   author,
-  likes_count,
-}) => (
+  likes_count: likesCount,
+}: Props) => (
   <View style={styles.messagesContainer}>
     {image && (
       <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
@@ -42,9 +55,9 @@ const MessageElementComponent = ({
       <Text style={styles.author}>{author}</Text>
       <View style={styles.likeContainer}>
         <TouchableOpacity style={styles.likeButton}>
-        <Icon name="ios-thumbs-up" size={35} />
+          <Icon name="ios-thumbs-up" size={35} />
         </TouchableOpacity>
-        <Text>{likes_count}</Text>
+        <Text>{likesCount}</Text>
       </View>
     </View>
   </View>
