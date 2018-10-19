@@ -123,18 +123,16 @@ class ChatScreen extends PureComponent<Props, State> {
           />
         </View>
 
-        <KeyboardAvoidingView
-          style={styles.messageInputWrapper}
-          behavior="padding"
-          enabled
-        >
-          <Text style={styles.errorMessage}>{error}</Text>
-          <MessageInputComponent
-            ref={this.messageInputRef}
-            sendMessage={this.sendMessage}
-            attachPhoto={this.attachPhoto}
-          />
-        </KeyboardAvoidingView>
+        <View style={styles.messageInputWrapper}>
+          <KeyboardAvoidingView behavior="padding" enabled>
+            <Text style={styles.errorMessage}>{error}</Text>
+            <MessageInputComponent
+              ref={this.messageInputRef}
+              sendMessage={this.sendMessage}
+              attachPhoto={this.attachPhoto}
+            />
+          </KeyboardAvoidingView>
+        </View>
       </View>
     )
   }
