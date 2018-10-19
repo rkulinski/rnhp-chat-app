@@ -3,11 +3,18 @@
  * @format
  * @flow
  */
-import React, { PureComponent } from 'react'
-import { View, Text, Keyboard, KeyboardAvoidingView } from 'react-native'
+import React, { PureComponent, Provider } from 'react'
+import {
+  View,
+  Text,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
 import { MessageInputComponent, MessagesViewComponent } from '../../components'
 import { retrieveData } from '../../utils/async-storage'
 import { createMessage, getMessages } from '../../utils/api'
+import { UserContext } from './user-context'
 import { USERNAME_STORAGE_KEY, NICK_STORAGE_KEY } from '../config'
 
 import styles from './styles'
@@ -48,10 +55,10 @@ class ChatScreen extends PureComponent<Props, State> {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
+
     this.fetchMessages()
-    listener = this.props.navigation.addListener('didFocus', () =>
-      this.onTabEnter()
-    )
+    listener = navigation.addListener('didFocus', () => this.onTabEnter())
   }
 
   componentWillUnmount() {
@@ -111,28 +118,43 @@ class ChatScreen extends PureComponent<Props, State> {
     }
   }
 
+  renderInputView = () => {
+    const { error } = this.state
+
+    return (
+      <View style={styles.messageInputWrapper}>
+        <Text style={styles.errorMessage}>{error}</Text>
+        <MessageInputComponent
+          ref={this.messageInputRef}
+          sendMessage={this.sendMessage}
+          attachPhoto={this.attachPhoto}
+        />
+      </View>
+    )
+  }
+
   render() {
-    const { messages, error, fetching } = this.state
+    const { messages, fetching, username } = this.state
 
     return (
       <View style={styles.chatContainer}>
         <View style={styles.messagesContainer}>
-          <MessagesViewComponent
-            messages={messages.reverse()}
-            loading={fetching}
-          />
+          <UserContext.Provider value={username}>
+            <MessagesViewComponent
+              messages={messages.reverse()}
+              loading={fetching}
+              fetchData={this.fetchMessages}
+            />
+          </UserContext.Provider>
         </View>
 
-        <View style={styles.messageInputWrapper}>
+        {Platform.OS === 'ios' ? (
           <KeyboardAvoidingView behavior="padding" enabled>
-            <Text style={styles.errorMessage}>{error}</Text>
-            <MessageInputComponent
-              ref={this.messageInputRef}
-              sendMessage={this.sendMessage}
-              attachPhoto={this.attachPhoto}
-            />
+            {this.renderInputView()}
           </KeyboardAvoidingView>
-        </View>
+        ) : (
+          this.renderInputView()
+        )}
       </View>
     )
   }

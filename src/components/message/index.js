@@ -6,6 +6,8 @@
 import React from 'react'
 import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { likeMessage } from '../../utils/api'
+import { UserContext } from '../../screens/chat/user-context'
 
 const styles = StyleSheet.create({
   messagesContainer: {
@@ -54,9 +56,18 @@ const MessageElementComponent = ({
     <View style={styles.captionContainer}>
       <Text style={styles.author}>{author}</Text>
       <View style={styles.likeContainer}>
-        <TouchableOpacity style={styles.likeButton}>
-          <Icon name="ios-thumbs-up" size={35} />
-        </TouchableOpacity>
+        <UserContext.Consumer>
+          {username => (
+            <TouchableOpacity
+              style={styles.likeButton}
+              onPress={() => {
+                likeMessage(id, username)
+              }}
+            >
+              <Icon name="ios-thumbs-up" size={35} />
+            </TouchableOpacity>
+          )}
+        </UserContext.Consumer>
         <Text>{likesCount}</Text>
       </View>
     </View>

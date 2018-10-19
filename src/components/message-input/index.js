@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   messageInputWrapper: {
     flexDirection: 'row',
     width: '100%',
-    padding: 5
+    padding: 5,
   },
   messageInput: {
     padding: 10,
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     alignItems: 'flex-start',
+    textAlignVertical: 'top',
   },
   buttonsGroup: {
     alignItems: 'center',

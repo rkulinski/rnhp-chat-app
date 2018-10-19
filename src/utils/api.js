@@ -23,7 +23,7 @@ export function createMessage(content: string, author: string, image: any) {
 }
 
 export function likeMessage(messageId: string, author: string) {
-  const likeURL: string = `${API_URL}/api/v1/messages/${messageId}/likes/`
+  const likeURL: string = `${API_URL}/api/v1/messages/${messageId}/like/`
 
   return axios.post(likeURL, { author })
 }
