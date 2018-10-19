@@ -40,6 +40,9 @@ const styles = StyleSheet.create({
   },
 })
 
+const DEFAULT_TRANSITION_TIME = 250
+const SHAKE_DELTA = 25
+
 type Props = {
   id: string,
   image: string,
@@ -48,11 +51,17 @@ type Props = {
   likes_count: number,
 }
 
-class MessageElementComponent extends Component<Props> {
-  _defaultTransition = 250
+type State = {
+  _translateXValue: any,
+}
 
-  state = {
-    _translateXValue: new Animated.Value(0),
+class MessageElementComponent extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      _translateXValue: new Animated.Value(0),
+    }
   }
 
   componentDidMount() {
@@ -61,33 +70,34 @@ class MessageElementComponent extends Component<Props> {
 
   shakeAnimation() {
     const { _translateXValue } = this.state
-
     const { timing, sequence } = Animated
+    const duration: number = DEFAULT_TRANSITION_TIME
+    const shakeDelta: number = SHAKE_DELTA
 
-      sequence([
-        timing(_translateXValue, {
-          toValue: 25,
-          duration: this._defaultTransition,
-        }),
-        timing(_translateXValue, {
-          toValue: -25,
-          duration: this._defaultTransition,
-        }),
-        timing(_translateXValue, {
-          toValue: 0,
-          duration: this._defaultTransition,
-        }),
-      ])
-    .start()
+    sequence([
+      timing(_translateXValue, {
+        toValue: shakeDelta,
+        duration,
+      }),
+      timing(_translateXValue, {
+        toValue: -shakeDelta,
+        duration,
+      }),
+      timing(_translateXValue, {
+        toValue: 0,
+        duration,
+      }),
+    ]).start()
   }
 
   render() {
     const { id, image, content, author, likes_count: likesCount } = this.props
+    const { _translateXValue } = this.state
 
     return (
       <Animated.View
         style={{
-          transform: [{ translateX: this.state._translateXValue }],
+          transform: [{ translateX: _translateXValue }],
         }}
       >
         <View style={styles.messagesContainer}>

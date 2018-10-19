@@ -3,7 +3,7 @@
  * @format
  * @flow
  */
-import React, { PureComponent, Provider } from 'react'
+import React, { PureComponent } from 'react'
 import {
   View,
   Text,
