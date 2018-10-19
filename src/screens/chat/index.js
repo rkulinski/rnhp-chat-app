@@ -45,7 +45,6 @@ class ChatScreen extends PureComponent<Props, State> {
       messages: [],
     }
     this.messageInputRef = React.createRef()
-    this.messagesListComponentRef = React.createRef()
   }
 
   async componentDidMount() {
@@ -72,7 +71,7 @@ class ChatScreen extends PureComponent<Props, State> {
     this.setState(() => ({
       messages: newMessages.data,
       fetching: false,
-    }),this.scrollListToBottom)
+    }))
   }
 
   sendMessage = async (text: string) => {
@@ -95,11 +94,6 @@ class ChatScreen extends PureComponent<Props, State> {
 
   attachPhoto = (photo: string) => {
     this.setState({ photo })
-    this.scrollListToBottom()
-  }
-
-  scrollListToBottom = () => {
-    this.messagesListComponentRef.current.scrollListToBottom()
   }
 
   getUserData = async () => {
@@ -124,8 +118,7 @@ class ChatScreen extends PureComponent<Props, State> {
       <View style={styles.chatContainer}>
         <View style={styles.messagesContainer}>
           <MessagesViewComponent
-            ref={this.messagesListComponentRef}
-            messages={messages}
+            messages={messages.reverse()}
             loading={fetching}
           />
         </View>

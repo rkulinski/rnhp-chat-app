@@ -18,16 +18,6 @@ type Props = {
 const keyExtractor = item => `${item.id}`
 
 class MessageViewComponent extends PureComponent<Props> {
-  constructor(props: Props) {
-    super(props)
-
-    this.messageListRef = React.createRef()
-  }
-
-  scrollListToBottom = () => {
-    this.messageListRef.current.scrollToEnd()
-  }
-
   render() {
     const { messages } = this.props
 
@@ -37,7 +27,8 @@ class MessageViewComponent extends PureComponent<Props> {
           data={messages}
           renderItem={({ item }) => <MessageElementComponent {...item} />}
           keyExtractor={keyExtractor}
-          ref={this.messageListRef}
+          removeClippedSubviews={false}
+          inverted
         />
       </View>
     )
