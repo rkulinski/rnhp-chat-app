@@ -74,9 +74,10 @@ class ChatScreen extends PureComponent<Props, State> {
 
     await this.getUserData()
     const newMessages = await getMessages()
+    const reversedMessages = newMessages.data.reverse()
 
     this.setState(() => ({
-      messages: newMessages.data,
+      messages: reversedMessages,
       fetching: false,
     }))
   }
@@ -141,7 +142,7 @@ class ChatScreen extends PureComponent<Props, State> {
         <View style={styles.messagesContainer}>
           <UserContext.Provider value={username}>
             <MessagesViewComponent
-              messages={messages.reverse()}
+              messages={messages}
               loading={fetching}
               fetchData={this.fetchMessages}
             />

@@ -31,7 +31,6 @@ class MessageViewComponent extends PureComponent<Props> {
       <View style={styles.container}>
         <FlatList
           inverted
-          removeClippedSubviews={false}
           data={messages}
           keyExtractor={keyExtractor}
           renderItem={({ item }) => <MessageElementComponent {...item} />}
