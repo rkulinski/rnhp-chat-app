@@ -11,6 +11,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  Vibration,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { likeMessage } from '../../utils/api'
@@ -66,6 +67,7 @@ class MessageElementComponent extends Component<Props, State> {
 
   componentDidMount() {
     this.shakeAnimation()
+    Vibration.vibrate()
   }
 
   shakeAnimation() {
