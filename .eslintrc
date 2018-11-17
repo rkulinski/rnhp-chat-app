@@ -1,6 +1,9 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb",
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
   "plugins": [
     "react",
     "flowtype",
@@ -24,9 +27,10 @@
         "peerDependencies": false
       }
     ],
-    "semi": ["error", "never"]
+    "semi": ["error", "never"],
   },
   "env": {
-    "jest": true
+    "jest": true,
+    "browser": true
   }
 }
