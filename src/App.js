@@ -1,16 +1,29 @@
 import React from 'react'
-import { createBottomTabNavigator } from 'react-navigation'
+import { createBottomTabNavigator, createAppContainer } from 'react-navigation'
+import { SafeAreaView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import ChatScreen from './screens/chat'
 import ConfigScreen from './screens/config'
 
-const AppNavigator = createBottomTabNavigator(
+const withSafeAreaView = WrappedComponent =>
+  // eslint-disable-next-line react/prefer-stateless-function
+  class WithSafeAreaView extends React.Component {
+    render() {
+      return (
+        <SafeAreaView style={{ flex: 1 }}>
+          <WrappedComponent />
+        </SafeAreaView>
+      )
+    }
+  }
+
+const TabNavigator = createBottomTabNavigator(
   {
-    Chat: ChatScreen,
-    Config: ConfigScreen,
+    Chat: withSafeAreaView(ChatScreen),
+    Config: withSafeAreaView(ConfigScreen),
   },
   {
-    navigationOptions: ({ navigation }) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state
         let iconName: string
@@ -33,4 +46,4 @@ const AppNavigator = createBottomTabNavigator(
   }
 )
 
-export default () => <AppNavigator />
+export default createAppContainer(TabNavigator)

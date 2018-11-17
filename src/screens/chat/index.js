@@ -74,7 +74,7 @@ class ChatScreen extends PureComponent<Props, State> {
 
     await this.getUserData()
     const newMessages = await getMessages()
-    const reversedMessages = newMessages.data.reverse()
+    const reversedMessages = newMessages.data
 
     this.setState(() => ({
       messages: reversedMessages,
